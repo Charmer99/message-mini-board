@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1> <%= title  %></h1>
+    <a href="/new">Create new message</a>
+    <% messages.forEach((message, index) => { %>
+       <h2>User: <%= message.user %></h2>
+       <p>Message: <%= message.text %></p> 
+       <p>Added: <%= message.added %></p>
+       <a href="/messages/<%= index %>">Open</a>
+        <hr>
+<% }) %>
+</body>
+</html>
