@@ -4,16 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+        <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1> <%= title  %></h1>
-    <a href="/new">Create new message</a>
-    <% messages.forEach((message, index) => { %>
-       <h2>User: <%= message.user %></h2>
-       <p>Message: <%= message.text %></p> 
-       <p>Added: <%= message.added %></p>
-       <a href="/messages/<%= index %>">Open</a>
-        <hr>
-<% }) %>
+        <div class="container">
+            <header>
+                <h1><%= title %></h1>
+                <a class="button" href="/new">Create new message</a>
+            </header>
+
+            <section class="messages">
+                <% messages.forEach((message, index) => { %>
+                    <article class="message">
+                        <h2>User: <%= message.user %></h2>
+                        <p class="text"><%= message.text %></p>
+                        <p class="meta">Added: <%= message.added %></p>
+                        <a class="link" href="/messages/<%= index %>">Open</a>
+                    </article>
+                <% }) %>
+            </section>
+        </div>
 </body>
 </html>
