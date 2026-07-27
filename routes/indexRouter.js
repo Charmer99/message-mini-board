@@ -1,27 +1,15 @@
-const express = require("express");
-const { Router } = require("express");
+const db = require("../db/queries")
 
+const { Router } = require("express");
 const router = Router();
 
-const messages = [
-    {
-        text: "Hi there",
-        user: "Amando",
-        added: new Date(),
-        
-    },
 
-    {
-        text: "Hello world",
-        user: "Charlers",
-        added: new Date(),
-    }
-]
+router.get("/", async(req, res) => {
+    const messages = await db.getAllMessages()
 
-router.get("/", (req, res) => {
     res.render("index", {
         title: "Mini message Board",
-        messages: messages
+        messages
     })
 })
 
@@ -29,27 +17,21 @@ router.get("/new", (req, res) => {
     res.render("form")
 })
 
-router.post("/new", (req, res) => {
+router.post("/new", async(req, res) => {
   
-
-    const messageUser = req.body.messageUser;
-    const messageText = req.body.messageText
-
-    messages.push({
-        text: messageText,
-        user: messageUser,
-        added: new Date()
-    })
+    const { messageUser: username, messageText: message } = req.body
+   await db.insertMessage(username,message)
 
     res.redirect("/")
     
 })
 
-router.get("/messages/:id", (req, res) => {
-    const message = messages[req.params.id];
+router.get("/messages/:id", async(req, res) => {
+
+    const message = await db.getMessageById(req.params.id)
     
     res.render("message", {
-        message: message
+        message
     })
 })
 
