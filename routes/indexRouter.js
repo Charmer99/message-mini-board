@@ -5,12 +5,22 @@ const router = Router();
 
 
 router.get("/", async(req, res) => {
-    const messages = await db.getAllMessages()
+    try {
+        const messages = await db.getAllMessages();
 
-    res.render("index", {
-        title: "Mini message Board",
-        messages
-    })
+        res.render("index", {
+            title: "Mini message Board",
+            messages,
+            error: null
+        });
+    } catch (error) {
+        console.error("Home page error:", error.message);
+        res.status(503).render("index", {
+            title: "Mini message Board",
+            messages: [],
+            error: "The message board is temporarily unavailable. Please try again shortly."
+        });
+    }
 })
 
 router.get("/new", (req, res) => {
@@ -18,21 +28,38 @@ router.get("/new", (req, res) => {
 })
 
 router.post("/new", async(req, res) => {
-  
-    const { messageUser: username, messageText: message } = req.body
-   await db.insertMessage(username,message)
+    const { messageUser: username, messageText: message } = req.body;
+    const saved = await db.insertMessage(username, message);
+
+    if (!saved) {
+        return res.status(503).send("Unable to save your message right now. Please try again later.");
+    }
 
     res.redirect("/")
-    
 })
 
 router.get("/messages/:id", async(req, res) => {
+    try {
+        const message = await db.getMessageById(req.params.id);
 
-    const message = await db.getMessageById(req.params.id)
-    
-    res.render("message", {
-        message
-    })
+        if (!message) {
+            return res.status(404).render("message", {
+                message: null,
+                error: "Message not found or the database is unavailable."
+            });
+        }
+
+        res.render("message", {
+            message,
+            error: null
+        });
+    } catch (error) {
+        console.error("Message page error:", error.message);
+        res.status(503).render("message", {
+            message: null,
+            error: "The message board is temporarily unavailable. Please try again shortly."
+        });
+    }
 })
 
 module.exports = router;

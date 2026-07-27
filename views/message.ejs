@@ -10,16 +10,22 @@
 	<div class="container">
 		<h1>Message Details</h1>
 
-		<div class="message-detail">
-			<h2>User</h2>
-			<p><%= message.user %></p>
+		<% if (error) { %>
+			<p class="error"><%= error %></p>
+		<% } else if (!message) { %>
+			<p>Message not found.</p>
+		<% } else { %>
+			<div class="message-detail">
+				<h2>User</h2>
+				<p><%= message.username %></p>
 
-			<h2>Message</h2>
-			<p><%= message.text %></p>
+				<h2>Message</h2>
+				<p><%= message.message %></p>
 
-			<h2>Date</h2>
-			<p><%= message.added %></p>
-		</div>
+				<h2>Date</h2>
+				<p><%= message.created_at %></p>
+			</div>
+		<% } %>
 
 		<a class="button" href="/">Back</a>
 	</div>
