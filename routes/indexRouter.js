@@ -28,14 +28,25 @@ router.get("/new", (req, res) => {
 })
 
 router.post("/new", async(req, res) => {
-    const { messageUser: username, messageText: message } = req.body;
-    const saved = await db.insertMessage(username, message);
+    const username = req.body.messageUser?.trim();
+    const message = req.body.messageText?.trim();
 
-    if (!saved) {
-        return res.status(503).send("Unable to save your message right now. Please try again later.");
+    if (!username || !message) {
+        return res.status(400).send("Please enter both your name and a message.");
     }
 
-    res.redirect("/")
+    try {
+        const saved = await db.insertMessage(username, message);
+
+        if (!saved) {
+            return res.status(503).send("Unable to save your message right now. Please try again later.");
+        }
+
+        res.redirect("/");
+    } catch (error) {
+        console.error("Save message error:", error.message);
+        return res.status(503).send("Unable to save your message right now. Please try again later.");
+    }
 })
 
 router.get("/messages/:id", async(req, res) => {
